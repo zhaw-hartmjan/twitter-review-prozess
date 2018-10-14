@@ -58,19 +58,6 @@ var alias = emailAdress.substring(0,4); execution.setVariable("alias",alias);</b
     <bpmn:endEvent id="TweetAnfrageBehandelt" name="Tweet-Anfrage&#10;behandelt">
       <bpmn:incoming>SequenceFlow_0wkf2cr</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="TweetSenden" name="Tweet senden">
-      <bpmn:extensionElements>
-        <camunda:properties>
-          <camunda:property name="KPI-Ratio" value="Tweet Rejected" />
-        </camunda:properties>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Genehmigt</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_13w0jnd</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="MitarbeiterBenachrichtigen" name="Mitarbeiter benachrichtigen">
-      <bpmn:incoming>SequenceFlow_0akgqts</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0wkf2cr</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:userTask id="TweetAnfragePruefen" name="Tweet-Anfrage prüfen" camunda:candidateGroups="kommunikationsabteilung">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -114,6 +101,19 @@ var alias = emailAdress.substring(0,4); execution.setVariable("alias",alias);</b
     <bpmn:sequenceFlow id="SequenceFlow_13w0jnd" sourceRef="TweetSenden" targetRef="ExclusiveGateway_0fj9kmh" />
     <bpmn:sequenceFlow id="SequenceFlow_0akgqts" sourceRef="ExclusiveGateway_0fj9kmh" targetRef="MitarbeiterBenachrichtigen" />
     <bpmn:sequenceFlow id="SequenceFlow_0wkf2cr" sourceRef="MitarbeiterBenachrichtigen" targetRef="TweetAnfrageBehandelt" />
+    <bpmn:serviceTask id="TweetSenden" name="Tweet senden" camunda:asyncBefore="true" camunda:delegateExpression="#{sendTweetAdapter}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="KPI-Ratio" value="Tweet Rejected" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Genehmigt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_13w0jnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="MitarbeiterBenachrichtigen" name="Mitarbeiter benachrichtigen" camunda:asyncBefore="true" camunda:delegateExpression="#{notifyEmployeeAdapter}">
+      <bpmn:incoming>SequenceFlow_0akgqts</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0wkf2cr</bpmn:outgoing>
+    </bpmn:sendTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1y44tdo">
@@ -204,12 +204,6 @@ var alias = emailAdress.substring(0,4); execution.setVariable("alias",alias);</b
       <bpmndi:BPMNShape id="Lane_1d0re29_di" bpmnElement="Lane_1d0re29">
         <dc:Bounds x="32" y="284" width="1100" height="234" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_19ckxfd_di" bpmnElement="TweetSenden">
-        <dc:Bounds x="653" y="418" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_1ighy8a_di" bpmnElement="MitarbeiterBenachrichtigen">
-        <dc:Bounds x="898" y="311" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0466hoj_di" bpmnElement="TweetAnfragePruefen">
         <dc:Bounds x="402" y="172" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -228,6 +222,12 @@ var alias = emailAdress.substring(0,4); execution.setVariable("alias",alias);</b
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_0ayji0u_di" bpmnElement="Task_1ol9n8x">
         <dc:Bounds x="137" y="172" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0hepqja_di" bpmnElement="TweetSenden">
+        <dc:Bounds x="653" y="418" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_184lwpm_di" bpmnElement="MitarbeiterBenachrichtigen">
+        <dc:Bounds x="898" y="311" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
