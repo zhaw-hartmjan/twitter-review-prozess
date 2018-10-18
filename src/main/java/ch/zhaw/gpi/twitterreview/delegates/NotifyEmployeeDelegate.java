@@ -16,7 +16,7 @@ public class NotifyEmployeeDelegate implements JavaDelegate{
      * 
      * 1. Die benötigten Prozessvariablen auslesen
      * 2. Die E-Mail-Nachricht zusammenstellen
-     * 3. Die E-Mail in der Konsole ausgeben
+     * 3. Die E-Mail in der Konsole ausgeben!
      * @param de            bjekt welches die Verknüpfung zur Process Engine und aktuellen Execution enthält
      * @throws Exception
      */
